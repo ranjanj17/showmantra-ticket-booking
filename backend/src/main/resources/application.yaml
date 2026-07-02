@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: showmantra-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/showmantra_db?createDatabaseIfNotExist=true
+    username: root
+    password: ranjan@1
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
