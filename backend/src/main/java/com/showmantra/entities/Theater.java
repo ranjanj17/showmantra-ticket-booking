@@ -1,4 +1,4 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

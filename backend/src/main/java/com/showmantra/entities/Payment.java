@@ -1,11 +1,12 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
-import com.showmantra.entity.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
+import com.showmantra.entities.enums.PaymentStatus;
 
 @Entity
 @Table(name = "payments")

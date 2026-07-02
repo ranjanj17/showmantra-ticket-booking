@@ -1,33 +1,34 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
-import com.showmantra.entity.enums.SeatClass;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "seats")
+@Table(name = "shows")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Seat extends BaseEntity {
+public class Show extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id", nullable = false)
+    private Movie movie;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "screen_id", nullable = false)
     private Screen screen;
 
     @Column(nullable = false)
-    private String rowNumber;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private Integer seatNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SeatClass seatClass;
+    private LocalDateTime endTime;
 }

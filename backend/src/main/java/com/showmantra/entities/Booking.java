@@ -1,12 +1,13 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
-import com.showmantra.entity.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.showmantra.entities.enums.BookingStatus;
 
 @Entity
 @Table(name = "bookings")

@@ -1,10 +1,11 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
-import com.showmantra.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
+
+import com.showmantra.entities.enums.Role;
 
 @Entity
 @Table(name = "users")

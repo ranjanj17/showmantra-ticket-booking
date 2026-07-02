@@ -1,4 +1,4 @@
-package com.showmantra.entity.enums;
+package com.showmantra.entities.enums;
 
 public enum BookingStatus {
     PENDING,

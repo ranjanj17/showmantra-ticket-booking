@@ -1,11 +1,12 @@
-package com.showmantra.entity;
+package com.showmantra.entities;
 
-import com.showmantra.entity.enums.ShowSeatStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.showmantra.entities.enums.ShowSeatStatus;
 
 @Entity
 @Table(
