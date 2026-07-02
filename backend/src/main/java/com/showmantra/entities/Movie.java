@@ -24,6 +24,9 @@ public class Movie extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(length = 1000)
+    private String description;
+
     @Column(nullable = false)
     private Integer durationMinutes;
 

@@ -6,6 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.showmantra.entities.enums.BookingStatus;
 
@@ -47,4 +49,11 @@ public class Booking extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus status;
+
+    // A single booking can hold multiple seats.
+    // cascade = CascadeType.ALL means any database action (save, delete, update) 
+    // applied to this Booking will automatically be applied to all its associated ShowSeats.
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ShowSeat> showSeats = new ArrayList<>();
 }

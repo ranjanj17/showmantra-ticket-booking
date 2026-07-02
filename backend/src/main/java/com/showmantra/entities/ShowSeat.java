@@ -51,4 +51,9 @@ public class ShowSeat extends BaseEntity {
     // The dynamically calculated price for this specific seat (e.g. VIP seats cost more than STANDARD).
     @Column(nullable = false)
     private BigDecimal price;
+
+    // The booking this seat is currently associated with (if any)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 }

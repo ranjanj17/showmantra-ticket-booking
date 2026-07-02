@@ -26,7 +26,7 @@ public class Seat extends BaseEntity {
     @JoinColumn(name = "screen_id", nullable = false)
     private Screen screen;
 
-    @Column(nullable = false)
+    @Column(name = "seat_row", nullable = false)
     private String rowNumber;
 
     @Column(nullable = false)
