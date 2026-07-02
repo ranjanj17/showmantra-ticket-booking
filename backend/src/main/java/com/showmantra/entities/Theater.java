@@ -3,6 +3,9 @@ package com.showmantra.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Represents a physical cinema location/building.
+ */
 @Entity
 @Table(name = "theaters")
 @Getter

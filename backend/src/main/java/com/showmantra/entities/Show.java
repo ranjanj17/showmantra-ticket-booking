@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a specific screening of a Movie at a specific Theater Screen 
+ * at a specific Date and Time.
+ */
 @Entity
 @Table(name = "shows")
 @Getter
@@ -18,6 +22,7 @@ public class Show extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // FetchType.LAZY is best practice for @ManyToOne. Eager fetching cascades uncontrollably and crashes DBs under high load.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;

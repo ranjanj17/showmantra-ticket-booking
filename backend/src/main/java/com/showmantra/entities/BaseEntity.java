@@ -11,6 +11,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+/**
+ * Base abstract entity that provides standard auditing fields (createdAt, updatedAt) for all tables.
+ * Using @MappedSuperclass ensures these columns are inherited by all child entities.
+ */
 @Getter
 @Setter
 @MappedSuperclass

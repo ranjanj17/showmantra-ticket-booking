@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository for managing Booking entities.
+ */
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
     @Query("SELECT b FROM Booking b JOIN FETCH b.user JOIN FETCH b.show WHERE b.id = :bookingId")

@@ -3,6 +3,10 @@ package com.showmantra.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Represents a specific viewing hall (screen) inside a Theater.
+ * Belongs to one Theater, and contains many physical Seats.
+ */
 @Entity
 @Table(name = "screens")
 @Getter

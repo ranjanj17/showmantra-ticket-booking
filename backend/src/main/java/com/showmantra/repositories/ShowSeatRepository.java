@@ -7,8 +7,15 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+/**
+ * Repository for managing ShowSeat entities, tracking real-time seat availability for shows.
+ */
 public interface ShowSeatRepository extends JpaRepository<ShowSeat, Long> {
 
+    /**
+     * Optimized query to fetch all seats for a specific show along with the physical seat layout data.
+     * Prevents N+1 queries when building the SeatMatrixResponse.
+     */
     @Query("SELECT ss FROM ShowSeat ss JOIN FETCH ss.seat WHERE ss.show.id = :showId")
     List<ShowSeat> findByShowIdWithSeat(@Param("showId") Long showId);
 }

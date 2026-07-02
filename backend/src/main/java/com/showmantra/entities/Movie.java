@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a movie catalog entry in the ticketing system.
+ */
 @Entity
 @Table(name = "movies")
 @Getter

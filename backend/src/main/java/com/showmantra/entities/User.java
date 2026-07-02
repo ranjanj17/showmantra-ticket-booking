@@ -7,6 +7,10 @@ import java.util.UUID;
 
 import com.showmantra.entities.enums.Role;
 
+/**
+ * Represents a registered user in the ShowMantra system.
+ * Uses UUID as the primary key for security to prevent ID enumeration attacks.
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -16,6 +20,7 @@ import com.showmantra.entities.enums.Role;
 @Builder
 public class User extends BaseEntity {
 
+    // Using UUID instead of sequential Long prevents attackers from guessing order numbers (ID enumeration).
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -28,6 +33,7 @@ public class User extends BaseEntity {
 
     private String phone;
 
+    // Saving as STRING makes the database readable (e.g. 'ADMIN') instead of saving meaningless integer ordinals (e.g. '1').
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
