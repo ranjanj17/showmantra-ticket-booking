@@ -8,9 +8,10 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class UserResponseDTO {
+public class UserResponse {
     private UUID id;
     private String email;
     private String phone;
     private Role role;
+    private String token; // The JWT token for authentication
 }

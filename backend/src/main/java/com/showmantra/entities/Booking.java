@@ -50,10 +50,10 @@ public class Booking extends BaseEntity {
     @Column(nullable = false)
     private BookingStatus status;
 
-    // A single booking can hold multiple seats.
-    // cascade = CascadeType.ALL means any database action (save, delete, update) 
-    // applied to this Booking will automatically be applied to all its associated ShowSeats.
+    // A single booking holds multiple items, preserving history.
+    // cascade = CascadeType.ALL means any database action applied to Booking 
+    // will be applied to BookingItems.
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<ShowSeat> showSeats = new ArrayList<>();
+    private List<BookingItem> items = new ArrayList<>();
 }

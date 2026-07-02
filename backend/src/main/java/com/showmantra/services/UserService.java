@@ -1,9 +1,12 @@
 package com.showmantra.services;
 
-import com.showmantra.dtos.UserCreateDTO;
-import com.showmantra.dtos.UserResponseDTO;
+import com.showmantra.dtos.LoginRequest;
+import com.showmantra.dtos.UserCreateRequest;
+import com.showmantra.dtos.UserResponse;
 import com.showmantra.entities.User;
 import com.showmantra.entities.enums.Role;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import com.showmantra.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,45 +18,52 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Transactional
-    public UserResponseDTO createUser(UserCreateDTO dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("User with email " + dto.getEmail() + " already exists.");
+    public UserResponse createUser(UserCreateRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("User with email " + request.getEmail() + " already exists.");
         }
 
         User user = User.builder()
-                .email(dto.getEmail())
+                .email(request.getEmail())
                 // Storing password as provided since no password encoder is specified
-                .passwordHash(dto.getPassword()) 
-                .phone(dto.getPhone())
-                .role(dto.getRole() != null ? dto.getRole() : Role.USER)
+                .passwordHash(request.getPassword()) 
+                .phone(request.getPhone())
+                .role(request.getRole() != null ? request.getRole() : Role.USER)
                 .build();
 
         user = userRepository.save(user);
         log.info("Created new user with email: {}", user.getEmail());
 
-        return UserResponseDTO.builder()
+        String token = jwtService.generateToken(user.getId().toString());
+
+        return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole())
+                .token(token)
                 .build();
     }
 
-    public UserResponseDTO login(com.showmantra.dtos.LoginRequest dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+    public UserResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password."));
         
-        if (!user.getPasswordHash().equals(dto.getPassword())) {
+        if (!user.getPasswordHash().equals(request.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password.");
         }
 
-        return UserResponseDTO.builder()
+        String token = jwtService.generateToken(user.getId().toString());
+
+        return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole())
+                .token(token)
                 .build();
     }
 }

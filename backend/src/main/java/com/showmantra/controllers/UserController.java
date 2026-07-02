@@ -1,7 +1,8 @@
 package com.showmantra.controllers;
 
-import com.showmantra.dtos.UserCreateDTO;
-import com.showmantra.dtos.UserResponseDTO;
+import com.showmantra.dtos.LoginRequest;
+import com.showmantra.dtos.UserCreateRequest;
+import com.showmantra.dtos.UserResponse;
 import com.showmantra.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserCreateDTO dto) {
-        UserResponseDTO response = userService.createUser(dto);
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserCreateRequest request) {
+        UserResponse response = userService.createUser(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDTO> login(@Valid @RequestBody com.showmantra.dtos.LoginRequest dto) {
-        UserResponseDTO response = userService.login(dto);
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+        UserResponse response = userService.login(request);
         return ResponseEntity.ok(response);
     }
 }

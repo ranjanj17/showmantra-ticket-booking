@@ -52,8 +52,4 @@ public class ShowSeat extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal price;
 
-    // The booking this seat is currently associated with (if any)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
 }

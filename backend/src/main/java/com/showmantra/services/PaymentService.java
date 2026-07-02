@@ -6,13 +6,13 @@ import com.showmantra.entities.Booking;
 import com.showmantra.entities.Payment;
 import com.showmantra.entities.enums.BookingStatus;
 import com.showmantra.entities.enums.PaymentStatus;
-import com.showmantra.exceptions.ConflictException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import com.showmantra.repositories.BookingRepository;
 import com.showmantra.repositories.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.UUID;
 
 /**
@@ -31,16 +31,16 @@ public class PaymentService {
      * @param request The payment details including the booking ID and amount.
      * @return A PaymentResponse containing the outcome.
      * @throws IllegalArgumentException if booking is invalid or amount mismatches.
-     * @throws ConflictException if booking is not in a valid state or payment already exists.
+     * @throws ResponseStatusException if booking is not in a valid state or payment already exists.
      */
     @Transactional
     public PaymentResponse processPayment(PaymentRequest request) {
         // 1. Fetch the booking
         Booking booking = bookingRepository.findById(request.bookingId())
-                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found"));
 
         if (booking.getStatus() != BookingStatus.PENDING) {
-            throw new ConflictException("Booking is already processed or expired. Current status: " + booking.getStatus());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Booking is already processed or expired. Current status: " + booking.getStatus());
         }
 
         // 2. Validate amount matches
@@ -50,7 +50,7 @@ public class PaymentService {
 
         // 3. Check if a payment already exists for this booking to prevent double charging
         if (paymentRepository.findByBookingId(booking.getId()).isPresent()) {
-             throw new ConflictException("A payment has already been initiated for this booking.");
+             throw new ResponseStatusException(HttpStatus.CONFLICT, "A payment has already been initiated for this booking.");
         }
 
         // 4. Simulate Third-Party Payment Gateway (Stripe/Razorpay, etc.)
