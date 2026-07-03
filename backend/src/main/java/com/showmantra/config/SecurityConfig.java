@@ -33,17 +33,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors().and()
-            .csrf().disable() // Stateless API, no CSRF needed
-            .authorizeHttpRequests()
+            // Enable CORS using the corsConfigurationSource bean defined below
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // Disable CSRF since we are using stateless JWTs (no session cookies)
+            .csrf(csrf -> csrf.disable())
+            // Configure route-level authorization rules
+            .authorizeHttpRequests(auth -> auth
+                // Allow public access to authentication endpoints (login, register)
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
+                // Allow public access to browse movies, shows, and theaters
                 .requestMatchers("/api/movies/**", "/api/shows/**", "/api/theaters/**").permitAll()
+                // Allow public access to the default Spring error path
                 .requestMatchers("/error").permitAll()
+                // Require a valid JWT token for any other request (e.g. booking tickets)
                 .anyRequest().authenticated()
-            .and()
-            .sessionManagement()
+            )
+            // Configure session management to be stateless (do not store user info in server memory)
+            .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            )
+            // Insert our custom JWT filter before the standard Spring Security authentication filter
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -52,10 +61,15 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        // Allow all origins (e.g. localhost:5173 for frontend)
         configuration.setAllowedOrigins(List.of("*"));
+        // Allow common HTTP methods used in REST APIs
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Allow headers required for sending JSON and JWT tokens
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-User-Id"));
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Apply this CORS configuration to all endpoints in the application
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
