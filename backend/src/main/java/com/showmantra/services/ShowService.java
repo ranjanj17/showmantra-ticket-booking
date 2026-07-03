@@ -9,6 +9,7 @@ import com.showmantra.entities.Screen;
 import com.showmantra.entities.Seat;
 import com.showmantra.entities.Show;
 import com.showmantra.entities.ShowSeat;
+import com.showmantra.entities.enums.SeatClass;
 import com.showmantra.entities.enums.ShowSeatStatus;
 import com.showmantra.repositories.MovieRepository;
 import com.showmantra.repositories.ScreenRepository;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,12 +59,19 @@ public class ShowService {
 
         // Initialize ShowSeats for the new show
         List<ShowSeat> showSeats = seats.stream().map(seat -> {
+            // Price logic depends on SeatClass
+            BigDecimal finalPrice = request.basePrice();
+            if (seat.getSeatClass() == SeatClass.GOLD) {
+                finalPrice = finalPrice.add(new BigDecimal("50.00"));
+            } else if (seat.getSeatClass() == SeatClass.PLATINUM) {
+                finalPrice = finalPrice.add(new BigDecimal("100.00"));
+            }
+            
             return ShowSeat.builder()
                     .show(savedShow)
                     .seat(seat)
                     .status(ShowSeatStatus.AVAILABLE)
-                    // In a real app, price logic depends on SeatClass. For now we use basePrice.
-                    .price(request.basePrice()) 
+                    .price(finalPrice) 
                     .build();
         }).collect(Collectors.toList());
 

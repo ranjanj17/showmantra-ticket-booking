@@ -15,16 +15,16 @@ export const Seat: React.FC<SeatProps> = ({ seat, isSelected, onClick }) => {
   };
 
   const getStatusColor = () => {
-    if (isSelected || seat.status === 'SELECTED') return 'bg-blue-500 hover:bg-blue-600 text-white';
+    if (isSelected || seat.status === 'SELECTED') return 'bg-green-500 text-black border-green-500';
     switch (seat.status) {
       case 'AVAILABLE':
-        return 'bg-gray-200 hover:bg-green-400 text-gray-700';
+        return 'bg-transparent text-green-500 border-green-500 hover:bg-green-500/20';
       case 'LOCKED':
-        return 'bg-yellow-400 text-white cursor-not-allowed';
+        return 'bg-yellow-600 text-black border-yellow-600 cursor-not-allowed';
       case 'BOOKED':
-        return 'bg-red-500 text-white cursor-not-allowed';
+        return 'bg-gray-500 text-gray-800 border-gray-500 cursor-not-allowed opacity-50';
       default:
-        return 'bg-gray-200 text-gray-700';
+        return 'bg-gray-500 text-gray-300 border-gray-500';
     }
   };
 
@@ -32,7 +32,7 @@ export const Seat: React.FC<SeatProps> = ({ seat, isSelected, onClick }) => {
     <button
       onClick={handleClick}
       disabled={seat.status === 'BOOKED' || seat.status === 'LOCKED'}
-      className={`w-10 h-10 rounded-t-lg border-b-4 border-gray-400 font-semibold text-xs flex items-center justify-center transition-colors duration-200 ${getStatusColor()}`}
+      className={`w-8 h-8 rounded border flex items-center justify-center text-xs font-medium transition-colors duration-200 ${getStatusColor()}`}
       title={`Row ${seat.row} - Seat ${seat.number}`}
     >
       {seat.number}

@@ -105,8 +105,8 @@ public class DataSeeder implements CommandLineRunner {
                 int[] showHours = { 10, 14, 18, 21 }; // 10 AM, 2 PM, 6 PM, 9 PM
 
                 for (Screen s : allScreens) {
-                        // For each screen, schedule 4 shows per day for the next 2 days
-                        for (int day = 0; day < 2; day++) {
+                        // For each screen, schedule 4 shows per day for the next 5 days
+                        for (int day = 0; day < 5; day++) {
                                 for (int hour : showHours) {
                                         Movie m = savedMovies.get(random.nextInt(savedMovies.size()));
                                         LocalDateTime startTime = LocalDateTime.now().plusDays(day).withHour(hour)

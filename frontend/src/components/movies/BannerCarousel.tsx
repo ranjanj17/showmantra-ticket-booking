@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Movie } from '../../services/movieService';
 
 interface BannerCarouselProps {
@@ -6,6 +7,7 @@ interface BannerCarouselProps {
 }
 
 export const BannerCarousel: React.FC<BannerCarouselProps> = ({ movies }) => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -31,7 +33,8 @@ export const BannerCarousel: React.FC<BannerCarouselProps> = ({ movies }) => {
       {movies.map((movie, index) => (
         <div
           key={movie.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          onClick={() => navigate(`/movies/${movie.id}`)}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >

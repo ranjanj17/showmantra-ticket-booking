@@ -152,10 +152,14 @@ export const MyBookings = () => {
                       </div>
                     ) : (
                       <div className="w-full flex flex-col items-center">
-                        <div className="w-16 h-16 bg-white border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center mb-4">
-                          <Ticket className="text-gray-400" />
+                        <div className="w-20 h-20 bg-white border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center mb-4 p-1">
+                          <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${booking.bookingId}`} 
+                            alt="Ticket QR Code"
+                            className="w-full h-full object-contain"
+                          />
                         </div>
-                        <p className="text-xs text-gray-500 mb-4">Present this ticket at the counter</p>
+                        <p className="text-xs text-gray-500 mb-4">Present this QR at the counter</p>
                         {isCancellable && (
                           <button 
                             onClick={() => handleCancel(booking.bookingId)}
