@@ -4,4 +4,14 @@
   body {
     @apply bg-gray-50 text-gray-900 m-0 p-0 font-sans;
   }
+  
+  /* Hide scrollbar globally for all scrollable elements */
+  * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
 }

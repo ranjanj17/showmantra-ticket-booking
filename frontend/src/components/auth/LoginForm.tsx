@@ -24,17 +24,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       setLoading(true);
       const data = await loginApi(email, password);
       login(
-        { id: data.id, email: data.email, phone: data.phone, role: data.role }, 
+        { id: data.id, email: data.email, phone: data.phone, role: data.role },
         data.token
       );
       toast.success('Successfully logged in!');
       setEmail('');
       setPassword('');
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        toast.error('Invalid email or password');
+      if (error.response) {
+        const backendMessage = error.response.data?.message;
+        if (error.response.status === 404) {
+          toast.error(backendMessage || 'Invalid email (User not found)');
+        } else if (error.response.status === 500 || error.response.status === 400) {
+          toast.error(backendMessage || 'Invalid password or credentials');
+        } else {
+          toast.error(backendMessage || 'Invalid credentials');
+        }
       } else {
-        toast.error('Something went wrong during login');
+        toast.error('Network error. Please check your connection.');
       }
     } finally {
       setLoading(false);
@@ -51,19 +58,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-shadow"
             placeholder="Enter your email"
           />
         </div>
-        
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-shadow"
@@ -71,8 +78,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           />
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading}
           className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 rounded-md transition-colors disabled:opacity-70 disabled:cursor-not-allowed mt-4"
         >

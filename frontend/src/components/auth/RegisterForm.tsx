@@ -31,10 +31,27 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
       );
       toast.success('Successfully registered and logged in!');
     } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message || 'Invalid registration details');
+      if (error.response) {
+        const backendMessage = error.response.data?.message;
+        const validationErrors = error.response.data?.errors; // Spring Boot validation array
+        
+        if (error.response.status === 400) {
+          if (validationErrors && validationErrors.length > 0) {
+            toast.error(validationErrors[0].defaultMessage || 'Invalid registration details');
+          } else {
+            toast.error(backendMessage || 'Invalid registration details');
+          }
+        } else if (error.response.status === 500) {
+           if (backendMessage && backendMessage.includes('already exists')) {
+             toast.error('An account with this email already exists');
+           } else {
+             toast.error('Server error during registration');
+           }
+        } else {
+          toast.error(backendMessage || 'Something went wrong during registration');
+        }
       } else {
-        toast.error('Something went wrong during registration');
+        toast.error('Network error. Please try again.');
       }
     } finally {
       setLoading(false);
