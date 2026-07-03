@@ -1,13 +1,7 @@
 import React from 'react';
 import { MovieCard } from './MovieCard';
 
-interface Movie {
-  id: number;
-  title: string;
-  genre: string;
-  language: string;
-  image: string;
-}
+import { Movie } from '../../services/movieService';
 
 interface MovieListProps {
   movies: Movie[];

@@ -204,7 +204,7 @@ export const Navbar = () => {
       <div className="bg-gray-100 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 lg:px-10 h-10 flex items-center justify-between text-sm text-gray-700">
           <div className="flex gap-4">
-            <Link to="#" className="hover:text-red-500 transition-colors">Movies</Link>
+            <Link to="/movies" className="hover:text-red-500 transition-colors">Movies</Link>
             <Link to="#" className="hover:text-red-500 transition-colors">Stream</Link>
             <Link to="#" className="hover:text-red-500 transition-colors">Events</Link>
             <Link to="#" className="hover:text-red-500 transition-colors">Plays</Link>
