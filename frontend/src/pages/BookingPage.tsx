@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { SeatMatrix } from '../components/SeatMatrix';
 import { useBookingStore } from '../store/useBookingStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { lockSeats, confirmBooking, getShowSeats, SeatData } from '../services/bookingService';
+import { lockSeats, getShowSeats, cancelBooking, SeatData } from '../services/bookingService';
 
 export const BookingPage = () => {
   const { showId } = useParams<{ showId: string }>();
@@ -18,11 +18,28 @@ export const BookingPage = () => {
   const [seats, setSeats] = useState<SeatData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Clear selections on mount/unmount
+  // Handle orphaned bookings when navigating back to edit seats
   useEffect(() => {
-    useBookingStore.setState({ selectedSeatIds: [] });
-    return () => useBookingStore.setState({ selectedSeatIds: [] });
-  }, []);
+    const handleOrphanedBooking = async () => {
+      const { currentBookingId, setCurrentBookingId } = useBookingStore.getState();
+      
+      if (currentBookingId) {
+        try {
+          await cancelBooking(currentBookingId);
+        } catch (e) {
+          console.error('Failed to cancel orphaned booking', e);
+        }
+        setCurrentBookingId(null);
+      } else {
+        // If we didn't just come back from a booking, clear previous selections
+        useBookingStore.setState({ selectedSeatIds: [] });
+      }
+    };
+    handleOrphanedBooking();
+    
+    // We intentionally do NOT clear selections on unmount, so they are preserved
+    // when navigating to the PaymentPage or returning back.
+  }, [showId]);
 
   // Fetch seats
   useEffect(() => {
@@ -63,25 +80,22 @@ export const BookingPage = () => {
       // 1. Lock the seats
       const { bookingId } = await lockSeats(showId, selectedSeatIds);
       
-      // 2. Simulate Payment Delay
-      const paymentPromise = new Promise((resolve) => setTimeout(resolve, 2000));
-      toast.promise(paymentPromise, {
-        loading: 'Processing payment...',
-        success: 'Payment successful!',
-        error: 'Payment failed.',
-      });
-      await paymentPromise;
-
-      // 3. Confirm Booking
-      await confirmBooking(bookingId);
+      // Save it to store so we can cancel it if they navigate back
+      useBookingStore.getState().setCurrentBookingId(bookingId);
       
-      toast.success('Tickets booked successfully!');
-      navigate('/bookings');
+      // 2. Redirect to Payment Page
+      navigate(`/payment/${bookingId}`, {
+        state: {
+          movieTitle,
+          selectedSeatsData,
+          totalPrice
+        }
+      });
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         toast.error('One or more selected seats are already booked. Please choose different seats.');
       } else {
-        toast.error('Failed to book tickets. Please try again.');
+        toast.error('Failed to reserve tickets. Please try again.');
       }
     } finally {
       setIsProcessing(false);

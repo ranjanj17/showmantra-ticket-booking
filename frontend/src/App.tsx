@@ -7,6 +7,7 @@ import { MyBookings } from './pages/MyBookings';
 import { AllMovies } from './pages/AllMovies';
 import { MovieDetails } from './pages/MovieDetails';
 import { BookingPage } from './pages/BookingPage';
+import { PaymentPage } from './pages/PaymentPage';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="movies" element={<AllMovies />} />
           <Route path="movies/:id" element={<MovieDetails />} />
           <Route path="book/:showId" element={<BookingPage />} />
+          <Route path="payment/:bookingId" element={<PaymentPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

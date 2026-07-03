@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Calendar as CalendarIcon, ArrowLeft } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
@@ -24,6 +24,22 @@ export const MovieDetails = () => {
   
   const [groupedShows, setGroupedShows] = useState<Record<string, Showtime[]>>({});
   const [isShowsLoading, setIsShowsLoading] = useState(false);
+  const theaterListRef = useRef<HTMLDivElement>(null);
+
+  const handleDateSelect = (d: Date) => {
+    setSelectedDate(d);
+    // Auto-scroll slightly so the theater list is more prominent
+    if (theaterListRef.current) {
+      const offset = 80; // Offset for sticky header
+      const elementPosition = theaterListRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   // Fetch movie details
   useEffect(() => {
@@ -122,47 +138,65 @@ export const MovieDetails = () => {
             <ArrowLeft size={20} />
           </button>
           
-          <img src={movie.image} alt={movie.title} className="w-48 md:w-64 rounded-xl shadow-2xl shrink-0" />
+          <img src={movie.image} alt={movie.title} className="w-48 md:w-64 rounded-xl shadow-2xl shrink-0 border border-gray-700" />
           
           <div className="flex-1 pt-2 md:pt-8">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">{movie.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{movie.title}</h1>
             <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
               <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium backdrop-blur-md">{movie.genre}</span>
-              <span className="flex items-center gap-1.5 text-sm font-medium text-gray-300">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-gray-300 bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm">
                 <Clock size={16} /> {movie.durationMinutes} min
               </span>
-              <span className="text-sm font-medium text-gray-300">{movie.language}</span>
+              <span className="text-sm font-medium text-gray-300 bg-black/20 px-3 py-1 rounded-full backdrop-blur-sm">{movie.language}</span>
             </div>
-            <p className="text-gray-300 max-w-3xl leading-relaxed text-sm md:text-base">
+            <p className="text-gray-300 max-w-3xl leading-relaxed text-sm md:text-base mb-8">
               {movie.description || "No description available."}
             </p>
+            
+            <button 
+              onClick={() => {
+                if (theaterListRef.current) {
+                  const offset = 80;
+                  const elementPosition = theaterListRef.current.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.scrollY - offset;
+                  window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+              }}
+              className="hidden md:inline-flex px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-lg shadow-red-500/30 transition-all transform hover:scale-105"
+            >
+              Book Tickets
+            </button>
           </div>
-          
-          {/* Date Selector right side */}
-          <div className="w-full md:w-auto pt-4 md:pt-8 md:pl-8 self-end md:self-center">
-            <h3 className="text-white text-sm font-semibold mb-3">Select Date</h3>
-            <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2 md:max-w-md">
-              {dates.map((d, i) => {
-                const isSelected = selectedDate.getDate() === d.getDate() && selectedDate.getMonth() === d.getMonth();
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedDate(d)}
-                    className={`flex flex-col items-center min-w-[70px] py-2 px-3 rounded-xl transition-all duration-200 border ${
-                      isSelected 
-                        ? 'bg-red-500 text-white shadow-lg border-red-500 scale-105' 
-                        : 'bg-white/10 text-gray-300 hover:bg-white/20 border-white/10'
-                    }`}
-                  >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider">{d.toLocaleDateString('en-US', { weekday: 'short' })}</span>
-                    <span className="text-xl font-bold my-0.5">{d.getDate()}</span>
-                    <span className="text-[10px] uppercase tracking-wider">{d.toLocaleDateString('en-US', { month: 'short' })}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+        </div>
+      </div>
 
+      {/* Sticky Date Selector Strip */}
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm" ref={theaterListRef}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-10">
+          <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-4">
+            {dates.map((d, i) => {
+              const isSelected = selectedDate.getDate() === d.getDate() && selectedDate.getMonth() === d.getMonth();
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleDateSelect(d)}
+                  className={`flex flex-col items-center min-w-[65px] py-2 px-3 rounded-xl transition-all duration-200 ${
+                    isSelected 
+                      ? 'bg-red-500 text-white shadow-md' 
+                      : 'bg-transparent text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className={`text-[10px] font-semibold uppercase tracking-wider ${isSelected ? 'text-red-100' : 'text-gray-500'}`}>
+                    {d.toLocaleDateString('en-US', { weekday: 'short' })}
+                  </span>
+                  <span className="text-xl font-bold my-0.5">{d.getDate()}</span>
+                  <span className={`text-[10px] uppercase tracking-wider ${isSelected ? 'text-red-100' : 'text-gray-500'}`}>
+                    {d.toLocaleDateString('en-US', { month: 'short' })}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

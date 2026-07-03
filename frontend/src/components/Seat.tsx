@@ -20,9 +20,8 @@ export const Seat: React.FC<SeatProps> = ({ seat, isSelected, onClick }) => {
       case 'AVAILABLE':
         return 'bg-transparent text-green-500 border-green-500 hover:bg-green-500/20';
       case 'LOCKED':
-        return 'bg-yellow-600 text-black border-yellow-600 cursor-not-allowed';
       case 'BOOKED':
-        return 'bg-gray-500 text-gray-800 border-gray-500 cursor-not-allowed opacity-50';
+        return 'bg-yellow-600 text-black border-yellow-600 cursor-not-allowed opacity-90';
       default:
         return 'bg-gray-500 text-gray-300 border-gray-500';
     }

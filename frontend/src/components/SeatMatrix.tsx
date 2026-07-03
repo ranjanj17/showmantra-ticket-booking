@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Seat } from './Seat';
-import { getShowSeats, lockSeat, SeatData } from '../services/bookingService';
+import { SeatData } from '../services/bookingService';
 import { useBookingStore } from '../store/useBookingStore';
 
 interface SeatMatrixProps {
@@ -119,7 +119,7 @@ export const SeatMatrix: React.FC<SeatMatrixProps> = ({ seats }) => {
           <span>Selected</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-500 rounded-sm opacity-50"></div> 
+          <div className="w-4 h-4 bg-yellow-600 rounded-sm"></div> 
           <span>Sold</span>
         </div>
       </div>
