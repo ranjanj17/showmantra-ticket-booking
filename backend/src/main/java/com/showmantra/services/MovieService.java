@@ -29,6 +29,10 @@ public class MovieService {
         return movieRepository.findAll();
     }
 
+    public List<Movie> getMoviesByCityId(Long cityId) {
+        return movieRepository.findMoviesByCityId(cityId);
+    }
+
     public List<Movie> searchMovies(String title) {
         return movieRepository.findByTitleContainingIgnoreCase(title);
     }

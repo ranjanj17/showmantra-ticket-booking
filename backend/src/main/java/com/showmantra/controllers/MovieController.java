@@ -29,7 +29,10 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Movie>> getAllMovies() {
+    public ResponseEntity<List<Movie>> getMovies(@RequestParam(required = false) Long cityId) {
+        if (cityId != null) {
+            return ResponseEntity.ok(movieService.getMoviesByCityId(cityId));
+        }
         return ResponseEntity.ok(movieService.getAllMovies());
     }
 }

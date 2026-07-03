@@ -13,8 +13,28 @@ export const Navbar = () => {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const cityDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Hide when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,12 +52,16 @@ export const Navbar = () => {
   const filteredCities = CITIES.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
+    <header className={`w-full bg-white shadow-sm sticky top-0 z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-7xl mx-auto px-4 lg:px-10 h-16 flex items-center justify-between">
         
         {/* Left Section: Logo & Search */}
         <div className="flex items-center gap-8 flex-1">
-          <Link to="/" className="flex items-center gap-3">
+          <Link 
+            to="/" 
+            className="flex items-center gap-3"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <img src={logo} alt="ShowMantra Logo" className="h-10 w-10 object-cover rounded-xl shadow-sm" />
             <span className="text-2xl font-bold tracking-tight text-gray-900">Show<span className="text-red-500">Mantra</span></span>
           </Link>
