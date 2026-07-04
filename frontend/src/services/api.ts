@@ -14,3 +14,15 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+// Add interceptor to handle 401/403 responses
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      // Token is invalid or expired
+      useAuthStore.getState().logout();
+      useAuthStore.getState().setAuthModalOpen(true);
+    }
+    return Promise.reject(error);
+  }
+);

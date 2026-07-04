@@ -2,8 +2,8 @@ package com.showmantra.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -23,8 +23,12 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Using a securely generated key for HMAC-SHA256
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(io.jsonwebtoken.io.Decoders.BASE64.decode(secretKey));
+    }
 
     public String generateToken(String userId) {
         Map<String, Object> claims = new HashMap<>();
@@ -38,7 +42,7 @@ public class JwtService {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 // Token expires in 10 hours
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SECRET_KEY)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -56,7 +60,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
