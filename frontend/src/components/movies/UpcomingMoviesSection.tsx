@@ -14,7 +14,7 @@ export const UpcomingMoviesSection = () => {
         </Link>
       </div>
 
-      <MovieList movies={MOCK_UPCOMING_MOVIES.slice(0, 4)} />
+      <MovieList movies={MOCK_UPCOMING_MOVIES.slice(0, 4)} disableClick={true} />
     </div>
   );
 };

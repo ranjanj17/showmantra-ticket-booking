@@ -33,7 +33,7 @@ export const AllMovies = () => {
         ) : displayMovies.length === 0 ? (
           <NoMoviesState city={city} />
         ) : (
-          <MovieList movies={displayMovies} />
+          <MovieList movies={displayMovies} disableClick={isUpcoming} />
         )}
       </div>
     </div>
