@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { agentChat } from '../../services/api';
 import { MessageSquare, X, Send } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 /**
  * AgentChat Component
@@ -67,7 +68,7 @@ export const AgentChat = () => {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-80 md:w-96 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 right-6 w-80 md:w-96 max-h-[calc(100vh-100px)] bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5">
           <div className="bg-indigo-600 p-4 flex justify-between items-center text-white">
             <h3 className="font-semibold flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
@@ -78,11 +79,23 @@ export const AgentChat = () => {
             </button>
           </div>
           
-          <div className="flex-1 p-4 overflow-y-auto min-h-[300px] max-h-[400px] bg-gray-900 space-y-4">
+          <div className="flex-1 p-4 overflow-y-auto min-h-[300px] bg-gray-900 space-y-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] p-3 rounded-2xl ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-gray-800 text-gray-200 rounded-bl-sm'}`}>
-                  <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                  <div className="text-sm">
+                    <ReactMarkdown
+                      components={{
+                        ul: ({node, ...props}) => <ul className="list-disc pl-4 space-y-1 my-2" {...props} />,
+                        ol: ({node, ...props}) => <ol className="list-decimal pl-4 space-y-1 my-2" {...props} />,
+                        li: ({node, ...props}) => <li className="pl-1" {...props} />,
+                        p: ({node, ...props}) => <p className="whitespace-pre-wrap mb-2 last:mb-0" {...props} />,
+                        strong: ({node, ...props}) => <strong className="font-semibold" {...props} />
+                      }}
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </div>
             ))}

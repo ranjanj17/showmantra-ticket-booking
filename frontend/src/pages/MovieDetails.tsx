@@ -84,7 +84,9 @@ export const MovieDetails = () => {
     const loadShowsAndTheaters = async () => {
       setIsShowsLoading(true);
       try {
-        const dateStr = selectedDate.toISOString().split('T')[0];
+        const offset = selectedDate.getTimezoneOffset();
+        const localDate = new Date(selectedDate.getTime() - (offset * 60 * 1000));
+        const dateStr = localDate.toISOString().split('T')[0];
         const [shows, theaters] = await Promise.all([
           showService.getShowsByMovieAndDate(movie.id, dateStr),
           theaterService.getTheatersByCityId(CITY_TO_ID_MAP[city])

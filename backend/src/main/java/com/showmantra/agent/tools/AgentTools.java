@@ -89,7 +89,7 @@ public class AgentTools {
                 List<String> formattedShows = shows.stream()
                         .map(s -> "Show ID: " + s.showId() + " | Time: " + s.startTime().toLocalTime().toString() + " at " + s.theaterName() + ", Screen: " + s.screenName())
                         .collect(Collectors.toList());
-                return new SearchShowsResponse("SUCCESS", formattedShows, "Found shows. Present these to the user to choose one by Show ID.");
+                return new SearchShowsResponse("SUCCESS", formattedShows, "Found shows. Present the theaters and times to the user to choose (DO NOT show the Show ID).");
             } catch (Exception e) {
                 return new SearchShowsResponse("FAILED", List.of(), e.getMessage());
             }
@@ -107,7 +107,7 @@ public class AgentTools {
                 stateRepo.save(state);
 
                 String layout = backendLogic.getSeatLayout(request.showId());
-                return new GetSeatLayoutResponse("SUCCESS", layout, "Present these seats to the user and ask them which specific ones they want.");
+                return new GetSeatLayoutResponse("SUCCESS", layout, "Present the available seat categories and prices. Ask the user which category and how many tickets they want. DO NOT ask for specific seat numbers.");
             } catch (Exception e) {
                 return new GetSeatLayoutResponse("FAILED", null, e.getMessage());
             }
