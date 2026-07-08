@@ -41,8 +41,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Allow public access to authentication endpoints (login, register)
                 .requestMatchers("/api/users/login", "/api/users/register").permitAll()
-                // Allow public access to browse movies, shows, and theaters
-                .requestMatchers("/api/movies/**", "/api/shows/**", "/api/theaters/**").permitAll()
+                // Allow public access to browse movies, shows, theaters, and agent
+                .requestMatchers("/api/movies/**", "/api/shows/**", "/api/theaters/**", "/api/agent/**").permitAll()
                 // Allow public access to the default Spring error path
                 .requestMatchers("/error").permitAll()
                 // Require a valid JWT token for any other request (e.g. booking tickets)

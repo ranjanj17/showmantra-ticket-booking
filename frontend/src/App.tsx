@@ -10,11 +10,14 @@ import { BookingPage } from './pages/BookingPage';
 import { PaymentPage } from './pages/PaymentPage';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 
+import { AgentChat } from './components/agent/AgentChat';
+
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Toaster position="top-right" />
+      <AgentChat />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

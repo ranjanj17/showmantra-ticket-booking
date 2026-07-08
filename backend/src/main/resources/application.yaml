@@ -1,6 +1,21 @@
 spring:
   application:
     name: showmantra-backend
+  ai:
+    retry:
+      max-attempts: 4
+      backoff:
+        initial-interval: 5000
+        multiplier: 2
+        max-interval: 20000
+    openai:
+      api-key: ${GEMINI_API_KEY}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai/
+      chat:
+        options:
+          model: gemini-2.5-flash
+      embedding:
+        enabled: false
   datasource:
     url: jdbc:mysql://localhost:3306/showmantra_db?createDatabaseIfNotExist=true
     username: root
@@ -23,3 +38,4 @@ jwt:
   # In production, this is overridden by the JWT_SECRET environment variable.
   # The hardcoded value here is strictly a fallback for local development.
   secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+

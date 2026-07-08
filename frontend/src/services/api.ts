@@ -26,3 +26,8 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const agentChat = async (sessionId: string, message: string) => {
+  const response = await api.post('/agent/chat', { sessionId, message });
+  return response.data;
+};
