@@ -80,13 +80,12 @@ public class BookingService {
         */
 
         // 3. Database Check Phase
-        // Fetch all seats for the show in one query (N+1 protected by our custom JPQL)
-        List<ShowSeat> showSeats = showSeatRepository.findByShowIdWithSeat(request.showId());
-        
-        // Filter out the specific seats the user requested
-        List<ShowSeat> targetSeats = showSeats.stream()
-                .filter(ss -> request.seatIds().contains(ss.getSeat().getId()))
-                .toList();
+        if (request.seatIds() == null || request.seatIds().isEmpty()) {
+            throw new IllegalArgumentException("No seats requested.");
+        }
+
+        // Fetch target seats directly with a pessimistic write lock to prevent concurrent double-booking
+        List<ShowSeat> targetSeats = showSeatRepository.findSeatsForUpdate(request.showId(), request.seatIds());
 
         if (targetSeats.size() != request.seatIds().size()) {
             throw new IllegalArgumentException("One or more requested seats do not exist for this show.");

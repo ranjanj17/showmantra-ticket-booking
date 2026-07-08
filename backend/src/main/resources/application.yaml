@@ -9,7 +9,7 @@ spring:
         multiplier: 2
         max-interval: 20000
     openai:
-      api-key: ${GEMINI_API_KEY}
+      api-key: ${GEMINI_API_KEY:provide_your_api_key_here}
       base-url: https://generativelanguage.googleapis.com/v1beta/openai/
       chat:
         options:

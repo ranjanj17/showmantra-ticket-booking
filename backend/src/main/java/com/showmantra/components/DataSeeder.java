@@ -80,7 +80,7 @@ public class DataSeeder implements CommandLineRunner {
                                 // Create Seats for the Screen
                                 List<Seat> seats = new ArrayList<>();
                                 char rowChar = 'A';
-                                for (int row = 0; row < 5; row++) { // 5 rows
+                                for (int row = 0; row < 7; row++) { // 7 rows
                                         for (int seatNum = 1; seatNum <= 10; seatNum++) { // 10 seats per row
                                                 SeatClass seatClass = (row < 2) ? SeatClass.SILVER
                                                                 : (row < 4 ? SeatClass.GOLD : SeatClass.PLATINUM);
