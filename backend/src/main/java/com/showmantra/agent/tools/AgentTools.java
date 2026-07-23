@@ -121,9 +121,10 @@ public class AgentTools {
             try {
                 AgentState state = stateRepo.findById(request.sessionId()).orElseThrow(() -> new RuntimeException("Session state not found"));
                 
-                // Retrieve the authenticated user's ID from the SecurityContext
-                String principalName = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-                UUID userId = UUID.fromString(principalName);
+                UUID userId = state.getUserId();
+                if (userId == null) {
+                    throw new RuntimeException("User is not authenticated. Please log in to book tickets.");
+                }
                 
                 state.setUserId(userId);
                 BookingResponse booking = backendLogic.lockSpecificSeats(request.showId(), request.seatLabels(), userId);

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -21,7 +22,7 @@ public class AgentInteractionController {
     public record ChatResponse(String sessionId, String reply, String status) {}
 
     @PostMapping("/chat")
-    public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request) {
+    public ResponseEntity<ChatResponse> chat(@RequestBody ChatRequest request, Principal principal) {
         String sessionId = request.sessionId();
         if (sessionId == null || sessionId.isBlank()) {
             sessionId = UUID.randomUUID().toString();
@@ -29,6 +30,9 @@ public class AgentInteractionController {
 
         AgentState state = stateRepo.findById(sessionId).orElse(new AgentState());
         state.setSessionId(sessionId);
+        if (principal != null && principal.getName() != null) {
+            state.setUserId(UUID.fromString(principal.getName()));
+        }
         stateRepo.save(state);
 
         // Process message through LLM and automatic function calling loop
