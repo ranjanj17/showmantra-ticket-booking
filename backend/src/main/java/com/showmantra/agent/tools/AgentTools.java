@@ -121,10 +121,9 @@ public class AgentTools {
             try {
                 AgentState state = stateRepo.findById(request.sessionId()).orElseThrow(() -> new RuntimeException("Session state not found"));
                 
-                // Keep the hardcoded user for now as specified in the Implementation Plan.
-                UUID userId = userRepository.findByEmail("testuser@showmantra.com")
-                        .map(User::getId)
-                        .orElseThrow(() -> new RuntimeException("Dummy user not found!"));
+                // Retrieve the authenticated user's ID from the SecurityContext
+                String principalName = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+                UUID userId = UUID.fromString(principalName);
                 
                 state.setUserId(userId);
                 BookingResponse booking = backendLogic.lockSpecificSeats(request.showId(), request.seatLabels(), userId);
